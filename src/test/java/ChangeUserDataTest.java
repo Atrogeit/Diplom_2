@@ -20,8 +20,8 @@ public class ChangeUserDataTest {
     private String accessToken;
 
     //Constants
-    private static final String email = "test-data@uandex.ru";
-    private static final String name = "Praktikum";
+    private static final String email = "test-data@yandex.ru";
+    private static final String name = "praktikum";
     private static final String USER_SHOULD_BE_AUTHORISED_TEXT = "You should be authorised";
 
 
@@ -46,7 +46,7 @@ public class ChangeUserDataTest {
 
         accessToken = loginResponse.extract().path("accessToken");
 
-        UniqUser newUserData = new UniqUser(email, name);
+        UniqUser newUserData = new UniqUser(name, email);
         ValidatableResponse updateResponse = UserResponseSetUp.update(newUserData, accessToken);
         statusCode = updateResponse.extract().statusCode();
 
@@ -55,8 +55,9 @@ public class ChangeUserDataTest {
         String updatedEmail = updateResponse.extract().path("user.email");
         String updatedName = updateResponse.extract().path("user.name");
 
-        assertEquals(email, updatedEmail);
         assertEquals(name, updatedName);
+        assertEquals(email, updatedEmail);
+
     }
 
     @Test

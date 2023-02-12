@@ -10,13 +10,11 @@ public class UniqUser {
         this.name = name;
         this.email = email;
         this.password = password;
-
     }
 
     public UniqUser(String name, String email) {
         this.name = name;
         this.email = email;
-
     }
 
     public String getEmail() {

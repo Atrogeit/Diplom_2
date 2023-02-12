@@ -14,7 +14,7 @@ public class UserData {
     public static UserData from(UniqUser uniqUser) {
         return new UserData(uniqUser.getEmail(), uniqUser.getPassword());
     }
-
+    //Созданные Idea Сеттеры и Геттеры
     public String getEmail() {
         return email;
     }
