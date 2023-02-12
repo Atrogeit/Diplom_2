@@ -13,7 +13,7 @@ public class UserGenerator {
         return new UniqUser(email, password, name);
     }
 
-    public static UniqUser getCourierWithoutEmail() {
+    public static UniqUser getUserWithoutEmail() {
         return new UniqUser("", password, name);
     }
 }

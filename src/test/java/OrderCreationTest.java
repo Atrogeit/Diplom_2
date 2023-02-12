@@ -1,18 +1,14 @@
 import api.model.Ingredient;
-//import api.model.User;
 import api.model.UniqUser;
 import api.util.UserGenerator;
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-//import api.client.IngredientClient;
 import api.user.UserIngredients;
-//import api.client.OrderClient;
 import api.user.UserOrder;
-//import api.client.UserClient;
 import api.user.UserResponseSetUp;
-//import api.util.UserCredentials;
 import api.util.UserData;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,16 +17,11 @@ import static org.junit.Assert.*;
 
 
 public class OrderCreationTest {
-
-    //private User user;
     private UniqUser uniqUser;
-    //private UserClient UserClient;
     private UserResponseSetUp UserResponseSetUp;
-    //private IngredientClient ingredientClient;
     private UserIngredients userIngredients;
     private Ingredient ingredient;
     private List<String> ingredientList;
-    //private OrderClient orderClient;
     private UserOrder userOrder;
     private String accessToken;
     private static final String NEED_INGREDIENT_IDS_TEXT = "Ingredient ids must be provided";
@@ -43,16 +34,9 @@ public class OrderCreationTest {
         userOrder = new UserOrder();
         ingredientList = new ArrayList<>();
     }
-
-    @After
-    public void cleanUp() {
-        if ( accessToken != null) {
-            UserResponseSetUp.delete(accessToken);
-        }
-    }
-
     @Test
-    public void createOrderWithAuthReturnsSuccessTrueAndStatus200() {
+    @DisplayName("Check order creation returns 200OK and SuccessTrue for authorized user")
+    public void checkOrderCreationReturns200OKAndSuccessTrue() {
         UserResponseSetUp.create(uniqUser);
         ValidatableResponse loginResponse = UserResponseSetUp.login(UserData.from(uniqUser));
         int statusCode = loginResponse.extract().statusCode();
@@ -82,7 +66,10 @@ public class OrderCreationTest {
     }
 
     @Test
-    public void createOrderWithoutAuthReturnsSuccessTrueAndStatus200() {
+    @DisplayName("Check order creation with unauthorized user returns 400")
+    //Тут есть баг, так как согласно документации создать заказ может только авторизованный пользователь
+    //Но при создании заказа неавторизованным пользователем возвращается 200ОК
+    public void checkOrderCreationWithUnauthorizedUserReturns400() {
         ValidatableResponse getIngredientResponse = userIngredients.get();
         int statusCode = getIngredientResponse.extract().statusCode();
         assertEquals(SC_OK, statusCode);
@@ -93,7 +80,7 @@ public class OrderCreationTest {
 
         ValidatableResponse orderResponse = userOrder.create(ingredient, "");
         statusCode = orderResponse.extract().statusCode();
-        assertEquals(SC_OK, statusCode);
+        assertEquals(SC_BAD_REQUEST, statusCode);
 
         Boolean statusOrder = orderResponse.extract().path("success");
         String burgerName = orderResponse.extract().path("name");
@@ -105,7 +92,8 @@ public class OrderCreationTest {
     }
 
     @Test
-    public void createOrderWithoutIngredientsReturnsStatus400AndMessageWithMistake() {
+    @DisplayName("Check order creation without ingredients returns 400 and mistake message")
+    public void checkOrderCreationWithoutIngredientsReturns400AndMistakeMessage() {
         ValidatableResponse getIngredientResponse = userIngredients.get();
         int statusCode = getIngredientResponse.extract().statusCode();
         assertEquals(SC_OK, statusCode);
@@ -124,7 +112,8 @@ public class OrderCreationTest {
     }
 
     @Test
-    public void createOrderWithInvalidHashOfIngredientReturnsStatus500() {
+    @DisplayName("Check order creation with invalid ingredient hash returns 500")
+    public void checkOrderCreationWithInvalidIngredientHashReturns500() {
         ValidatableResponse getIngredientResponse = userIngredients.get();
         int statusCode = getIngredientResponse.extract().statusCode();
         assertEquals(SC_OK, statusCode);
@@ -137,6 +126,12 @@ public class OrderCreationTest {
         statusCode = orderResponse.extract().statusCode();
 
         assertEquals(SC_INTERNAL_SERVER_ERROR, statusCode);
+    }
+    @After
+    public void cleanUp() {
+        if ( accessToken != null) {
+            UserResponseSetUp.delete(accessToken);
+        }
     }
 }
 

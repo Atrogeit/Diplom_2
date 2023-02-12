@@ -10,7 +10,7 @@ public class UserIngredients extends User {
     private static final String GET_PATH = "/api/ingredients";
 
     //Get list of ingredients step
-    @Step("Полученить список ингредиентов")
+    @Step("Get list of ingredients")
     public ValidatableResponse get() {
         return given()
                 .spec(getSpec())

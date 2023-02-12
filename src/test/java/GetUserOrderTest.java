@@ -3,6 +3,7 @@ import api.model.UniqUser;
 import api.user.UserResponseSetUp;
 import api.util.UserGenerator;
 import api.util.UserData;
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.After;
 import org.junit.Before;
@@ -16,16 +17,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class GetUserOrderTest {
-
-
     private UniqUser uniqUser;
-
     private UserResponseSetUp UserResponseSetUp;
-
     private UserIngredients userIngredients;
     private Ingredient ingredient;
     private List<String> ingredientList;
-
     private UserOrder userOrder;
     private String accessToken;
     private static final String NEED_AUTH_TEXT = "You should be authorised";
@@ -38,16 +34,9 @@ public class GetUserOrderTest {
         userOrder = new UserOrder();
         ingredientList = new ArrayList<>();
     }
-
-    @After
-    public void cleanUp() {
-        if ( accessToken != null) {
-            UserResponseSetUp.delete(accessToken);
-        }
-    }
-
     @Test
-    public void getOrderNonAuthUserReturnStatus401AndMessageAboutAuth() {
+    @DisplayName("Check for unauthorized user to get an 401 response for an order data request and a message to authorize")
+    public void check401ResponseAndMessageForUnauthorizedUserToRequestOrderData() {
         ValidatableResponse response = userOrder.get("");
         int statusCode = response.extract().statusCode();
 
@@ -59,7 +48,8 @@ public class GetUserOrderTest {
     }
 
     @Test
-    public void getOrderAuthUserReturnStatus200AndListOrder() {
+    @DisplayName("Check that authorized user get 200OK response and order data")
+    public void checkAuthorizedUserGetResponse200OKAndOrderData() {
         UserResponseSetUp.create(uniqUser);
         ValidatableResponse loginResponse = UserResponseSetUp.login(UserData.from(uniqUser));
         int statusCode = loginResponse.extract().statusCode();
@@ -91,5 +81,12 @@ public class GetUserOrderTest {
         assertTrue(orders.size() > 0);
         assertEquals(1, total);
         assertEquals(1, totalToday);
+    }
+
+    @After
+    public void cleanUp() {
+        if ( accessToken != null) {
+            UserResponseSetUp.delete(accessToken);
+        }
     }
 }

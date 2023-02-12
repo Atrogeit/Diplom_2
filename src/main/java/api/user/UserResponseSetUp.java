@@ -18,7 +18,7 @@ public class UserResponseSetUp extends User {
     private static final String UPDATE_PATH = "/api/auth/user";
 
     //Step to create User
-    @Step("Создание пользователя")
+    @Step("Unique user creation")
     public ValidatableResponse create (UniqUser uniqUser) {
         return given()
                 .spec(getSpec())
@@ -29,7 +29,7 @@ public class UserResponseSetUp extends User {
     }
 
     //User authorization step
-    @Step("Авторизация юзера")
+    @Step("User authorization")
     public ValidatableResponse login(UserData userData) {
         return given()
                 .spec(getSpec())
@@ -40,7 +40,7 @@ public class UserResponseSetUp extends User {
     }
 
     //User data refresh
-    @Step("Обновление данных юзера")
+    @Step("User data update")
     public ValidatableResponse update(UniqUser uniqUser, String token) {
         return given()
                 .spec(getSpec())
@@ -52,7 +52,7 @@ public class UserResponseSetUp extends User {
     }
 
     //Deleting user step
-    @Step("Удаление юзера")
+    @Step("Delete user")
     public ValidatableResponse delete(String token) {
         return given()
                 .spec(getSpec())

@@ -1,9 +1,7 @@
-//import api.model.User;
 import api.model.UniqUser;
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
-//import api.client.UserClient;
 import api.user.UserResponseSetUp;
-//import api.util.UserCredentials;
 import api.util.UserData;
 import api.util.UserGenerator;
 import org.junit.After;
@@ -14,10 +12,7 @@ import static org.junit.Assert.assertEquals;
 
 
 public class UserCreationTest {
-
-    //private User user;
     private UniqUser uniqUser;
-    //private UserClient UserClient;
     private UserResponseSetUp UserResponseSetUp;
     private String token;
     private static final String USER_EXISTS_TEXT = "User already exists";
@@ -29,17 +24,10 @@ public class UserCreationTest {
         uniqUser = UserGenerator.getUser();
         UserResponseSetUp = new UserResponseSetUp();
     }
-
-    @After
-    public void cleanUp() {
-        if ( token != null) {
-            UserResponseSetUp.delete(token);
-        }
-    }
-
     @Test
-    //Можно создать юзера
-    public void CreateNewUser() {
+    //Check creation of unique user
+    @DisplayName("Check creation of unique user")
+    public void checkUserCreation() {
         ValidatableResponse response = UserResponseSetUp.create(uniqUser);
         int statusCode = response.extract().statusCode();
 
@@ -54,8 +42,9 @@ public class UserCreationTest {
     }
 
     @Test
-    //Невозможно создать уже существующего юзера
-    public void MustNotCreateNewUserWithExistingData(){
+    //Check creation of already existing user
+    @DisplayName("Check creation of already existing user")
+    public void checkCreationUserAlreadyExists(){
         UserResponseSetUp.create(uniqUser);
         ValidatableResponse response = UserResponseSetUp.create(uniqUser);
 
@@ -67,17 +56,22 @@ public class UserCreationTest {
     }
 
     @Test
-    //Невозможно создать юзера без почты
-    public void CreateNewCourierWithoutLogin(){
-        UniqUser courierWithoutEmail = UserGenerator.getCourierWithoutEmail();
-        ValidatableResponse response = UserResponseSetUp.create(courierWithoutEmail);
+    //Check user creation without email
+    @DisplayName("Check user creation without email")
+    public void checkUserCreationWithoutEmail(){
+        UniqUser userWithoutEmail = UserGenerator.getUserWithoutEmail();
+        ValidatableResponse response = UserResponseSetUp.create(userWithoutEmail);
 
         int statusCode = response.extract().statusCode();
         assertEquals(SC_FORBIDDEN, statusCode);
 
-
         String message = response.extract().path("message");
         assertEquals(message, MESSAGE_NOT_ENOUGH_DATA);
-
+    }
+    @After
+    public void cleanUp() {
+        if ( token != null) {
+            UserResponseSetUp.delete(token);
+        }
     }
 }

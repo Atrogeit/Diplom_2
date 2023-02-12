@@ -1,9 +1,7 @@
-//import api.model.User;
 import api.model.UniqUser;
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
-//import api.client.UserClient;
 import api.user.UserResponseSetUp;
-//import api.util.UserCredentials;
 import api.util.UserData;
 import api.util.UserGenerator;
 import org.junit.After;
@@ -15,15 +13,9 @@ import static org.junit.Assert.*;
 
 
 public class UserLoginTest {
-
-    //private User user;
     private UniqUser uniqUser;
-
-    //private UserClient UserClient;
     private UserResponseSetUp UserResponseSetUp;
-
     private String accessToken;
-
     private static final String MESSAGE_INCORRECT_AUTH_DATA = "email or password are incorrect";
 
     @Before
@@ -32,18 +24,9 @@ public class UserLoginTest {
         UserResponseSetUp = new UserResponseSetUp();
 
     }
-
-    @After
-    public void cleanUp() {
-        if ( accessToken != null) {
-            UserResponseSetUp.delete(accessToken);
-        }
-    }
-
-
     @Test
-    //Успешная авторизация
-    public void successfulLoginReturnsStatusCode200AndTokens() {
+    @DisplayName("Check for successful user authorization returns 200OK and token")
+    public void checkSuccessfulLoginReturns200okAndToken() {
         UserResponseSetUp.create(uniqUser);
         ValidatableResponse loginResponse = UserResponseSetUp.login(UserData.from(uniqUser));
         int statusCode = loginResponse.extract().statusCode();
@@ -61,8 +44,8 @@ public class UserLoginTest {
     }
 
     @Test
-    // Авторизация без логина невозможна
-    public void AuthWithoutLoginReturnsStatusCode401AndMessageAboutInvalidData(){
+    @DisplayName("Check for unable to authorized without login returns 401 and error message")
+    public void checkAuthorizationWithoutLoginReturns401AndErrorMessage(){
         UserData userWithoutLogin = new UserData("", uniqUser.getPassword());
         ValidatableResponse loginResponse = UserResponseSetUp.login(userWithoutLogin);
         int statusCode = loginResponse.extract().statusCode();
@@ -72,6 +55,12 @@ public class UserLoginTest {
         String message = loginResponse.extract().path("message");
 
         assertEquals(MESSAGE_INCORRECT_AUTH_DATA, message);
+    }
+    @After
+    public void cleanUp() {
+        if ( accessToken != null) {
+            UserResponseSetUp.delete(accessToken);
+        }
     }
 
 }
