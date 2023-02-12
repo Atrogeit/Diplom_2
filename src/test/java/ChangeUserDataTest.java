@@ -35,7 +35,7 @@ public class ChangeUserDataTest {
     @Test
     //Checking that authorized user might update user data
     @DisplayName("Checking that authorized user might update user data")
-    public void checkUpdateDateForAuthorizedUser() {
+    public void checkUpdateDataForAuthorizedUser() {
         ValidatableResponse createResponse = UserResponseSetUp.create(uniqUser);
         int statusCode = createResponse.extract().statusCode();
         assertEquals(SC_OK, statusCode);
@@ -46,18 +46,17 @@ public class ChangeUserDataTest {
 
         accessToken = loginResponse.extract().path("accessToken");
 
-        UniqUser newUserData = new UniqUser(name, email);
+        UniqUser newUserData = new UniqUser(email, name);
         ValidatableResponse updateResponse = UserResponseSetUp.update(newUserData, accessToken);
         statusCode = updateResponse.extract().statusCode();
 
         assertEquals(SC_OK, statusCode);
 
-        String updatedEmail = updateResponse.extract().path("user.email");
         String updatedName = updateResponse.extract().path("user.name");
+        String updatedEmail = updateResponse.extract().path("user.email");
 
         assertEquals(name, updatedName);
         assertEquals(email, updatedEmail);
-
     }
 
     @Test

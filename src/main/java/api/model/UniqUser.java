@@ -12,9 +12,9 @@ public class UniqUser {
         this.password = password;
     }
 
-    public UniqUser(String name, String email) {
-        this.name = name;
+    public UniqUser(String email, String name) {
         this.email = email;
+        this.name = name;
     }
 
     public String getEmail() {

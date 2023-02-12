@@ -48,6 +48,7 @@ public class GetUserOrderTest {
     }
 
     @Test
+    //Тест падает, так как выдает все заказы из системы, а не для конкретного пользователя
     @DisplayName("Check that authorized user get 200OK response and order data")
     public void checkAuthorizedUserGetResponse200OKAndOrderData() {
         UserResponseSetUp.create(uniqUser);
