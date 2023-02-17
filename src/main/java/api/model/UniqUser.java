@@ -6,10 +6,10 @@ public class UniqUser {
     private String password;
     private String name;
 
-    public UniqUser(String name, String email, String password) {
-        this.name = name;
+    public UniqUser(String email, String password, String name) {
         this.email = email;
         this.password = password;
+        this.name = name;
 
     }
 

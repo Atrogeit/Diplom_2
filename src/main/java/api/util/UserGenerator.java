@@ -10,10 +10,10 @@ public class UserGenerator {
     private static String name = faker.name().name();
 
     public static UniqUser getUser() {
-        return new UniqUser(name, email, password);
+        return new UniqUser(email, password, name);
     }
 
     public static UniqUser getUserWithoutEmail() {
-        return new UniqUser(name,"", password);
+        return new UniqUser("", password, name);
     }
 }
