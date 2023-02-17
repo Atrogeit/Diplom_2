@@ -20,9 +20,15 @@ public class ChangeUserDataTest {
     private String accessToken;
 
     //Constants
-    private static final String email = "test-data@yandex.ru";
-    private static final String name = "praktikum";
+    private static final String email = "egortest@test.ru";
+    private static final String name = "egorTest";
     private static final String USER_SHOULD_BE_AUTHORISED_TEXT = "You should be authorised";
+
+    private ValidatableResponse createResponse;
+    private int statusCode;
+    private ValidatableResponse loginResponse;
+    private UniqUser newUserData;
+
 
 
     @Before
@@ -30,51 +36,34 @@ public class ChangeUserDataTest {
     public void setUp() {
         uniqUser = UserGenerator.getUser();
         UserResponseSetUp = new UserResponseSetUp();
+        createResponse = UserResponseSetUp.create(uniqUser);
+        statusCode = createResponse.extract().statusCode();
+        loginResponse = UserResponseSetUp.login(UserData.from(uniqUser));
+        accessToken = loginResponse.extract().path("accessToken");
+        newUserData = new UniqUser(email, name);
     }
 
     @Test
     //Checking that authorized user might update user data
     @DisplayName("Checking that authorized user might update user data")
     public void checkUpdateDataForAuthorizedUser() {
-        ValidatableResponse createResponse = UserResponseSetUp.create(uniqUser);
-        int statusCode = createResponse.extract().statusCode();
-        assertEquals(SC_OK, statusCode);
-
-        ValidatableResponse loginResponse = UserResponseSetUp.login(UserData.from(uniqUser));
-        statusCode = loginResponse.extract().statusCode();
-        assertEquals(SC_OK, statusCode);
-
-        accessToken = loginResponse.extract().path("accessToken");
-
-        UniqUser newUserData = new UniqUser(email, name);
         ValidatableResponse updateResponse = UserResponseSetUp.update(newUserData, accessToken);
         statusCode = updateResponse.extract().statusCode();
 
         assertEquals(SC_OK, statusCode);
 
-        String updatedName = updateResponse.extract().path("user.name");
         String updatedEmail = updateResponse.extract().path("user.email");
+        String updatedName = updateResponse.extract().path("user.name");
 
-        assertEquals(name, updatedName);
         assertEquals(email, updatedEmail);
+        assertEquals(name, updatedName);
+
     }
 
     @Test
     //Unauthorized user can't update user data
     @DisplayName("Unauthorized user can't update user data")
     public void checkUnableUpdateDataWithoutUserAuthorization() {
-        ValidatableResponse createResponse = UserResponseSetUp.create(uniqUser);
-        int statusCode = createResponse.extract().statusCode();
-        assertEquals(SC_OK, statusCode);
-
-        ValidatableResponse loginResponse = UserResponseSetUp.login(UserData.from(uniqUser));
-        statusCode = loginResponse.extract().statusCode();
-
-        assertEquals(SC_OK, statusCode);
-        accessToken = loginResponse.extract().path("accessToken");
-
-
-        UniqUser newUserData = new UniqUser(email, name);
 
         ValidatableResponse updateResponse = UserResponseSetUp.update(newUserData, "");
         statusCode = updateResponse.extract().statusCode();

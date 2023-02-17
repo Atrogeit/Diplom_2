@@ -2,19 +2,21 @@ package api.model;
 
 //User data set
 public class UniqUser {
-    private String name;
     private String email;
     private String password;
+    private String name;
 
     public UniqUser(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
+
     }
 
     public UniqUser(String email, String name) {
         this.email = email;
         this.name = name;
+
     }
 
     public String getEmail() {
@@ -25,4 +27,7 @@ public class UniqUser {
         return password;
     }
 
+    public String getName() {
+        return name;
+    }
 }
